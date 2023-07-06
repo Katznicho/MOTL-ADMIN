@@ -1,11 +1,10 @@
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, FlatList, Pressable, Image } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView,  FlatList, Pressable, Image } from 'react-native'
 import React, { useEffect } from 'react'
 import { generalstyles } from '../../../generalstyles/generalstyles'
 import firestore, { firebase } from '@react-native-firebase/firestore';
 import { CLUBS } from '../../../constants/endpoints';
 import { theme } from '../../../theme/theme';
 import { ActivityIndicator } from 'react-native-paper';
-import moment from 'moment';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Clubs = ({ navigation }: any) => {
@@ -34,7 +33,6 @@ const Clubs = ({ navigation }: any) => {
     }
     useEffect(() => {
         getClubs();
-        console.log(clubs)
     }, [])
 
     return (
@@ -51,9 +49,10 @@ const Clubs = ({ navigation }: any) => {
                 </View>
             ) : clubs?.length == 0 ? (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text>No clubs yet</Text>
+                    <Text style={{color:theme.colors.primary , fontSize:20 , fontWeight:"bold"}}>No clubs yet</Text>
                 </View>
-            ) : (
+            ) 
+            : (
                 <FlatList
                     data={clubs}
                     showsVerticalScrollIndicator={false}
@@ -91,6 +90,7 @@ const Clubs = ({ navigation }: any) => {
                                 />
 
                             </View>
+
                             <View style={{
                                 flexDirection: 'column',
                                 flex: 1,

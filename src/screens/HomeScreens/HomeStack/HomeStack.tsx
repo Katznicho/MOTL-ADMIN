@@ -63,7 +63,7 @@ const HomeStack = () => {
               showSearch
               {...props}
               title={"Add Status"}
-
+              previous={true}
               titleStyle={{
                 color: `${theme.colors.textColor}`, 
                 fontSize: 18,
@@ -95,7 +95,8 @@ const HomeStack = () => {
               showSearch
               {...props}
               title={"Add Post"}
-
+              previous={true}
+ 
               titleStyle={{
                 color: `${theme.colors.textColor}`, 
                 // fontSize: 18,
@@ -132,6 +133,7 @@ const HomeStack = () => {
               showSearch
               {...props}
               title={"Add Club"}
+              previous={true}
 
               titleStyle={{
                 color: `${theme.colors.textColor}`, 
@@ -169,6 +171,7 @@ const HomeStack = () => {
               showSearch
               {...props}
               title={"Choose Club"}
+              previous={true}
 
               titleStyle={{
                 color: `${theme.colors.textColor}`, 
@@ -205,7 +208,7 @@ const HomeStack = () => {
               showSearch
               {...props}
               title={"Create  Player"}
-
+              previous={true}
               titleStyle={{
                 color: `${theme.colors.textColor}`, 
                 // fontSize: 18,
@@ -238,6 +241,7 @@ const HomeStack = () => {
        {/* club page */}
        <Stack.Screen
         name="ClubDetailScreen"
+        
         component={ClubPage}
         options={{
           headerShown: false,
@@ -251,12 +255,12 @@ const HomeStack = () => {
         name="AllPlayerScreen"
         component={Players}
         options={{
-          header: props => (
+          header: (props:any) => (
             <TopBar
               showSearch
               {...props}
-              title={"Players"}
-
+              title={props.route.params.title}
+              previous={true}
               titleStyle={{
                 color: `${theme.colors.textColor}`, 
                 // fontSize: 18,

@@ -119,7 +119,10 @@ const ClubPage = ({ navigation }: any) => {
                             <TouchableOpacity style={{
                                 marginHorizontal:20
                             }}
-                             onPress={()=>navigation.navigate("AllPlayerScreen", {clubId})}
+                             onPress={()=>navigation.navigate("AllPlayerScreen", {
+                                clubId,
+                                title:clubData[0].name + " Players"
+                            })}
                             >
                                     <Text style={styles.playerlink}>View Players</Text>
                             </TouchableOpacity>

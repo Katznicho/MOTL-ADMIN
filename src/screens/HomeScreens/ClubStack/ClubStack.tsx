@@ -24,7 +24,7 @@ const ClubStack = () => {
               showSearch
               {...props}
               title={"CLUBS"}
-
+            
               titleStyle={{
                 color: `${theme.colors.textColor}`,
                 marginLeft: 10,

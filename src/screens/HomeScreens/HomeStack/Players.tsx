@@ -1,30 +1,28 @@
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, FlatList, Pressable, Image } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, FlatList, Pressable, Image } from 'react-native'
 import React, { useEffect } from 'react'
 import { generalstyles } from '../../../generalstyles/generalstyles'
-import firestore, { firebase } from '@react-native-firebase/firestore';
-import { CLUBS, CLUB_PLAYERS, PLAYERS } from '../../../constants/endpoints';
+import firestore from '@react-native-firebase/firestore';
+import {  CLUB_PLAYERS, PLAYERS } from '../../../constants/endpoints';
 import { theme } from '../../../theme/theme';
 import { ActivityIndicator } from 'react-native-paper';
-import moment from 'moment';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useRoute } from '@react-navigation/native';
 
 const Players= ({ navigation }: any) => {
     const [clubs, setClubs] = React.useState<any>([])
     const [loading, setLoading] = React.useState(false)
-
+    
     const { clubId } = useRoute<any>().params;
 
-    const getClubs = async () => {
+
+    const getPlayers = async () => {
         try {
             setLoading(true)
             setClubs([])
-            // const clubs = await firestore().collection(CLUBS).get();
             const clubs = await firestore().collection(CLUB_PLAYERS).doc(clubId).collection(PLAYERS).get();
             for (const club of clubs.docs) {
                 const clubData = club.data();
                 
-                 console.log()
                 const details = {
                     ...clubData,
                     playerId: club.id
@@ -38,8 +36,14 @@ const Players= ({ navigation }: any) => {
         }
     }
     useEffect(() => {
-        getClubs();
+        getPlayers();
     }, [])
+
+    useEffect(() => {
+        getPlayers();
+    }, [clubId])
+
+
 
     return (
         <SafeAreaView style={[generalstyles.container]}>
@@ -55,9 +59,10 @@ const Players= ({ navigation }: any) => {
                 </View>
             ) : clubs?.length == 0 ? (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text>No players yet</Text>
+                    <Text style={{color:theme.colors.primary , fontSize:20 , fontWeight:"bold"}}>No Players Yet</Text>
                 </View>
-            ) : (
+            ) 
+            : (
                 <FlatList
                     data={clubs}
                     showsVerticalScrollIndicator={false}

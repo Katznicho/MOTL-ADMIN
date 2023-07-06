@@ -1,18 +1,16 @@
 import React from "react";
-import { Appbar, Badge } from 'react-native-paper';
+import { Appbar } from 'react-native-paper';
 import { View, StyleSheet, Platform, Alert } from "react-native";
 import { theme } from "../../theme/theme";
 import { generalstyles } from "../../generalstyles/generalstyles";
-import { Image } from "react-native";
 import { useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/slices/UserSlice";
 import auth from '@react-native-firebase/auth';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import App from "../../../App";
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 
 
-const TopBar = ({ title, titleStyle }: any) => {
+const TopBar = ({ title, titleStyle, previous, navigation }: any) => {
 
     const dispatch = useDispatch();
 
@@ -74,11 +72,12 @@ const TopBar = ({ title, titleStyle }: any) => {
         >
             {/* user image and title */}
 
-            {/* <Avatar.Icon size={35} icon="account" style={{
-                backgroundColor: `${theme.colors.white}`,
-                marginRight: 5
-            }} /> */}
-           
+            {previous ?
+
+                <Appbar.BackAction onPress={navigation.goBack} color={`${theme.colors.white}`} />
+                : null
+            }
+
             <Appbar.Content
                 title={title}
                 titleStyle={titleStyle}
@@ -87,13 +86,11 @@ const TopBar = ({ title, titleStyle }: any) => {
 
             {/* user image and title */}
 
-            {/* {previous ?
-
-                <Appbar.BackAction onPress={navigation.goBack} color={`${theme.colors.white}`} />
-                : null} */}
 
 
-            {/* icon section */}
+
+
+            {/* icon section
 
             <View style={[generalstyles.flexStyles,
             {
