@@ -1,39 +1,53 @@
 import { StyleSheet, Text, View, SafeAreaView,  FlatList, Pressable, Image } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { generalstyles } from '../../../generalstyles/generalstyles'
 import firestore, { firebase } from '@react-native-firebase/firestore';
 import { CLUBS } from '../../../constants/endpoints';
 import { theme } from '../../../theme/theme';
 import { ActivityIndicator } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import SearchComponent from '../../../components/SearchComponent';
 
 const Clubs = ({ navigation }: any) => {
-    const [clubs, setClubs] = React.useState<any>([])
-    const [loading, setLoading] = React.useState(false)
+    const [clubs, setClubs] = React.useState<any[]>([]);
+const [loading, setLoading] = React.useState(false);
 
-    const getClubs = async () => {
-        try {
-            setLoading(true)
-            setClubs([])
-            const clubs = await firestore().collection(CLUBS).get();
-            for (const club of clubs.docs) {
-                const clubData = club.data();
-                clubData.id = club.id;
-                const details = {
-                    ...clubData,
-                    clubId: club.id
-                }
-                setClubs((prev: any) => [...prev, details])
-            }
-            setLoading(false)
-        }
-        catch (error) {
-            console.log(error)
-        }
-    }
-    useEffect(() => {
-        getClubs();
-    }, [])
+const getClubs = async () => {
+  try {
+    setLoading(true);
+    setClubs([]);
+    const unsubscribe = firestore().collection(CLUBS).onSnapshot((snapshot) => {
+      const updatedClubs: any[] = [];
+      snapshot.forEach((club) => {
+        const clubData = club.data();
+        clubData.id = club.id;
+        const details = {
+          ...clubData,
+          clubId: club.id,
+        };
+        updatedClubs.push(details);
+      });
+      setClubs(updatedClubs);
+      setLoading(false);
+    });
+    
+    // Return a cleanup function to unsubscribe from the snapshot listener when the component unmounts
+    return () => {
+      unsubscribe();
+    };
+  } catch (error) {
+  }
+};
+
+useEffect(() => {
+  const unsubscribe = getClubs();
+  // Return a cleanup function to unsubscribe from the snapshot listener when the component unmounts
+  return () => {
+
+  };
+}, []);
+
+const [searchQuery, setSearchQuery] = useState('');
 
     return (
         <SafeAreaView style={[generalstyles.container]}>
@@ -58,11 +72,44 @@ const Clubs = ({ navigation }: any) => {
                     showsVerticalScrollIndicator={false}
                     keyExtractor={item => String(item.id)}
                     contentContainerStyle={{
-                        paddingHorizontal: 10
-                        , marginBottom: 15,
-                        marginTop: -2,
-                        paddingBottom: 100
+                        // paddingHorizontal: 10
+                        // , marginBottom: 15,
+                        // marginTop: -2,
+                        // paddingBottom: 100
                     }}
+                    ListHeaderComponent={
+                        <View style={[generalstyles.centerContent]}>
+                        <SearchComponent
+                          placeholder="search for  a club"
+                          value={searchQuery}
+                          searchStyles={{
+                            elevation: 4,
+                            borderRadius: 25,
+                            marginTop: 5,
+                            marginBottom: 10,
+                            marginRight: 5,
+                             height: 45,
+                            backgroundColor: theme.colors.white,
+                            color: `${theme.colors.white}`,
+                            width: theme.dimensions.width / 1.2,
+                          }}
+                          onSearchChange={(query: any) => {
+                            if (query.length > 0) {
+                              const filteredClubs = clubs.filter((item: any) =>
+                                item.name.toLowerCase().includes(query.toLowerCase()),
+                              );
+                               setClubs(filteredClubs);
+
+                            } else {
+                                getClubs();
+                            }
+                            setSearchQuery(query);
+                        
+                          }}
+                        />
+                      </View>
+                         
+                    }
                     renderItem={({ item, index }) => {
                         return <Pressable
                             style={styles.container}

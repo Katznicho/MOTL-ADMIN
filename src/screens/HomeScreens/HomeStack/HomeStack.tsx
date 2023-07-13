@@ -12,6 +12,8 @@ import Clubs from '../ClubStack/Clubs';
 import CreatePlayer from './CreatePlayer';
 import Players from './Players';
 import PlayerDetails from './PlayerDetails';
+import EditClub from './EditClub';
+import EditPlayer from './EditPlayer';
 
 const Stack = createStackNavigator();
 
@@ -30,7 +32,7 @@ const HomeStack = () => {
               title={"MOTL ADMIN"}
 
               titleStyle={{
-                color: `${theme.colors.textColor}`, 
+                color: `${theme.colors.textColor}`,
                 fontSize: 18,
                 // width: 44,
                 // textShadowColor: "rgba(0, 0, 0, 0.5)",
@@ -53,8 +55,8 @@ const HomeStack = () => {
         }}
 
       />
-       {/* status */}
-       <Stack.Screen
+      {/* status */}
+      <Stack.Screen
         name="StatusScreen"
         component={CreateStatus}
         options={{
@@ -65,7 +67,7 @@ const HomeStack = () => {
               title={"Add Status"}
               previous={true}
               titleStyle={{
-                color: `${theme.colors.textColor}`, 
+                color: `${theme.colors.textColor}`,
                 fontSize: 18,
                 // width: 44,
                 // textShadowColor: "rgba(0, 0, 0, 0.5)",
@@ -78,15 +80,15 @@ const HomeStack = () => {
                 // fontFamily: "LeagueGothic-Regular",
 
               }}
-              
+
             />
           ),
         }}
 
       />
-       {/* status */}
-       {/* post */}
-       <Stack.Screen
+      {/* status */}
+      {/* post */}
+      <Stack.Screen
         name="PostScreen"
         component={CreatePost}
         options={{
@@ -96,9 +98,9 @@ const HomeStack = () => {
               {...props}
               title={"Add Post"}
               previous={true}
- 
+
               titleStyle={{
-                color: `${theme.colors.textColor}`, 
+                color: `${theme.colors.textColor}`,
                 // fontSize: 18,
                 // width: 44,
                 // textShadowColor: "rgba(0, 0, 0, 0.5)",
@@ -121,10 +123,11 @@ const HomeStack = () => {
         }}
 
       />
-       {/* post */}
+      {/* post */}
 
-       {/* create a club */}
-       <Stack.Screen
+      {/* create a club */}
+
+      <Stack.Screen
         name="ClubScreen"
         component={CreateClub}
         options={{
@@ -136,7 +139,7 @@ const HomeStack = () => {
               previous={true}
 
               titleStyle={{
-                color: `${theme.colors.textColor}`, 
+                color: `${theme.colors.textColor}`,
                 // fontSize: 18,
                 // width: 44,
                 // textShadowColor: "rgba(0, 0, 0, 0.5)",
@@ -159,10 +162,85 @@ const HomeStack = () => {
         }}
 
       />
-       {/* create a club */}
 
-       {/* player screen */}
-       <Stack.Screen
+      <Stack.Screen
+        name="EditClubScreen"
+        component={EditClub}
+        options={{
+          header: props => (
+            <TopBar
+              showSearch
+              {...props}
+              title={"Edit Club"}
+              previous={true}
+
+              titleStyle={{
+                color: `${theme.colors.textColor}`,
+                // fontSize: 18,
+                // width: 44,
+                // textShadowColor: "rgba(0, 0, 0, 0.5)",
+                // textShadowOffset: {
+                //   width: 0,
+                //   height: 4,
+                // },
+                textShadowRadius: 4,
+                textAlign: "left",
+                // fontFamily: "LeagueGothic-Regular",
+
+              }}
+              subtitleStyle={{
+                alignSelf: 'center',
+                color: `${theme.colors.textColor}`,
+                marginBottom: 5,
+              }}
+            />
+          ),
+        }}
+
+      />
+
+      {/* create a club */}
+
+      {/* edit player */}
+      <Stack.Screen
+        name="EditPlayerScreen"
+        component={EditPlayer}
+        options={{
+          header: props => (
+            <TopBar
+              showSearch
+              {...props}
+              title={"Edit Player"}
+              previous={true}
+
+              titleStyle={{
+                color: `${theme.colors.textColor}`,
+                // fontSize: 18,
+                // width: 44,
+                // textShadowColor: "rgba(0, 0, 0, 0.5)",
+                // textShadowOffset: {
+                //   width: 0,
+                //   height: 4,
+                // },
+                textShadowRadius: 4,
+                textAlign: "left",
+                // fontFamily: "LeagueGothic-Regular",
+
+              }}
+              subtitleStyle={{
+                alignSelf: 'center',
+                color: `${theme.colors.textColor}`,
+                marginBottom: 5,
+              }}
+            />
+          ),
+        }}
+
+      />
+      {/* edit player */}
+
+      {/* player screen */}
+      <Stack.Screen
         name="PlayerScreen"
         component={Clubs}
         options={{
@@ -174,7 +252,7 @@ const HomeStack = () => {
               previous={true}
 
               titleStyle={{
-                color: `${theme.colors.textColor}`, 
+                color: `${theme.colors.textColor}`,
                 // fontSize: 18,
                 // width: 44,
                 // textShadowColor: "rgba(0, 0, 0, 0.5)",
@@ -198,8 +276,8 @@ const HomeStack = () => {
 
       />
 
-       {/* create a player */}
-       <Stack.Screen
+      {/* create a player */}
+      <Stack.Screen
         name="CreatePlayerScreen"
         component={CreatePlayer}
         options={{
@@ -210,7 +288,7 @@ const HomeStack = () => {
               title={"Create  Player"}
               previous={true}
               titleStyle={{
-                color: `${theme.colors.textColor}`, 
+                color: `${theme.colors.textColor}`,
                 // fontSize: 18,
                 // width: 44,
                 // textShadowColor: "rgba(0, 0, 0, 0.5)",
@@ -233,36 +311,36 @@ const HomeStack = () => {
         }}
 
       />
-       {/* create a player */}
+      {/* create a player */}
 
 
-       {/* player screen */}
+      {/* player screen */}
 
-       {/* club page */}
-       <Stack.Screen
+      {/* club page */}
+      <Stack.Screen
         name="ClubDetailScreen"
-        
+
         component={ClubPage}
         options={{
           headerShown: false,
         }}
 
       />
-       {/* club page */}
+      {/* club page */}
 
-        {/* players */}
-        <Stack.Screen
+      {/* players */}
+      <Stack.Screen
         name="AllPlayerScreen"
         component={Players}
         options={{
-          header: (props:any) => (
+          header: (props: any) => (
             <TopBar
               showSearch
               {...props}
               title={props.route.params.title}
               previous={true}
               titleStyle={{
-                color: `${theme.colors.textColor}`, 
+                color: `${theme.colors.textColor}`,
                 // fontSize: 18,
                 // width: 44,
                 // textShadowColor: "rgba(0, 0, 0, 0.5)",
@@ -285,10 +363,10 @@ const HomeStack = () => {
         }}
 
       />
-        {/* players */}
+      {/* players */}
 
-       {/* player details */}
-       <Stack.Screen
+      {/* player details */}
+      <Stack.Screen
         name="PlayerDetails"
         component={PlayerDetails}
         options={{
@@ -296,7 +374,7 @@ const HomeStack = () => {
         }}
 
       />
-       {/* player details */}
+      {/* player details */}
     </Stack.Navigator>
   )
 }

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, FlatList, Pressable, Image } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { generalstyles } from '../../../generalstyles/generalstyles'
 import firestore from '@react-native-firebase/firestore';
 import {  CLUB_PLAYERS, PLAYERS } from '../../../constants/endpoints';
@@ -7,12 +7,13 @@ import { theme } from '../../../theme/theme';
 import { ActivityIndicator } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useRoute } from '@react-navigation/native';
+import SearchComponent from '../../../components/SearchComponent';
 
 const Players= ({ navigation }: any) => {
     const [clubs, setClubs] = React.useState<any>([])
     const [loading, setLoading] = React.useState(false)
     
-    const { clubId } = useRoute<any>().params;
+    const { clubId,clubName } = useRoute<any>().params;
 
 
     const getPlayers = async () => {
@@ -25,23 +26,27 @@ const Players= ({ navigation }: any) => {
                 
                 const details = {
                     ...clubData,
-                    playerId: club.id
+                    playerId: club.id,
+                    clubName:clubName,
+                    
                 }
                 setClubs((prev: any) => [...prev, details])
             }
             setLoading(false)
         }
         catch (error) {
-            console.log(error)
+        
         }
     }
-    useEffect(() => {
-        getPlayers();
-    }, [])
+    // useEffect(() => {
+    //     getPlayers();
+    // }, [])
 
     useEffect(() => {
         getPlayers();
     }, [clubId])
+
+    const [searchQuery, setSearchQuery] = useState('');
 
 
 
@@ -73,6 +78,39 @@ const Players= ({ navigation }: any) => {
                         marginTop: -2,
                         paddingBottom: 100
                     }}
+                    ListHeaderComponent={
+                        <View style={[generalstyles.centerContent]}>
+                        <SearchComponent
+                          placeholder="search for  a club player"
+                          value={searchQuery}
+                          searchStyles={{
+                            elevation: 4,
+                            borderRadius: 25,
+                            marginTop: 5,
+                            marginBottom: 10,
+                            marginRight: 5,
+                             height: 45,
+                            backgroundColor: theme.colors.white,
+                            color: `${theme.colors.white}`,
+                            width: theme.dimensions.width / 1.2,
+                          }}
+                          onSearchChange={(query: any) => {
+                            if (query.length > 0) {
+                              const filteredClubs = clubs.filter((item: any) =>
+                                item.name.toLowerCase().includes(query.toLowerCase()),
+                              );
+                               setClubs(filteredClubs);
+
+                            } else {
+                                getPlayers();
+                            }
+                            setSearchQuery(query);
+                        
+                          }}
+                        />
+                      </View>
+                         
+                    }
                     renderItem={({ item, index }) => {
                         return <Pressable
                             style={styles.container}

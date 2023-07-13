@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, ScrollView, Alert, ImageBackground, Modal, Pressable } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect , useState} from 'react'
 import { useRoute } from '@react-navigation/native'
 import { generalstyles } from '../../../generalstyles/generalstyles';
 import { CLUBS, CLUB_PLAYERS, PLAYERS } from '../../../constants/endpoints';
@@ -59,7 +59,8 @@ const PlayerDetails = ({ navigation }: any) => {
     const [playerData, setPlayerData] = React.useState<any>([])
 
     const getClubData = async () => {
-        // const clubDoc = await firestore().collection(CLUBS).doc(clubId).get();
+        const clubDoc = await firestore().collection(CLUBS).doc(clubId).get();
+         
         const playerDoc = await firestore().collection(CLUB_PLAYERS).doc(clubId).collection(PLAYERS).doc(playerId).get();
 
 
@@ -68,7 +69,9 @@ const PlayerDetails = ({ navigation }: any) => {
             const details = {
                 ...playerData,
                 playerId: playerId,
-                clubId
+                clubId,
+                clubName: clubDoc.data()?.name,
+                club:clubDoc.data()?.name
             }
             setPlayerData([details]);
             // Use clubData to display the club information on the page
@@ -80,7 +83,7 @@ const PlayerDetails = ({ navigation }: any) => {
 
     useEffect(() => {
         getClubData();
-    }, []);
+    }, [playerId, clubId]);
 
 
     const onFinishTransfer = async () => {
@@ -110,7 +113,8 @@ const PlayerDetails = ({ navigation }: any) => {
                 type: "success",
             });
             // navigation.navigate("Clubs")
-            navigation.navigate('Home')
+            navigation.navigate('HomeScreen')
+            setModalVisible(false)
             setLoading(false)
            
         }
@@ -288,6 +292,14 @@ const PlayerDetails = ({ navigation }: any) => {
                                         buttonColor={theme.colors.buttonColor}
                                         textColor={theme.colors.primary}
                                         style={styles.buttonStyles}
+                                        onPress={() => {
+                                            navigation.navigate("EditPlayerScreen", {
+                                                clubId,
+                                                clubName: playerData[0]?.club,
+                                                playerId: playerData[0].playerId
+                                            })
+                                        }
+                                        }
 
 
                                     >

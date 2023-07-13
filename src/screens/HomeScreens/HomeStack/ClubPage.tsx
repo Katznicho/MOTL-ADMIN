@@ -13,27 +13,47 @@ const ClubPage = ({ navigation }: any) => {
     const { clubId } = useRoute<any>().params
 
 
-    const [clubData, setClubData] = React.useState<any>([])
+    const [clubData, setClubData] = React.useState<any>([]);
 
     const getClubData = async () => {
-        const clubDoc = await firestore().collection(CLUBS).doc(clubId).get();
-        if (clubDoc.exists) {
-            const clubData = clubDoc.data();
-            const details = {
-                ...clubData,
-                clubId: clubDoc.id
-            }
-            setClubData([details]);
-            // Use clubData to display the club information on the page
-        } else {
-            // Handle the case when the club document does not exist
-            Alert.alert('Club does not exist!');
-        }
+      const clubDoc = await firestore().collection(CLUBS).doc(clubId).get();
+      if (clubDoc.exists) {
+        const clubData = clubDoc.data();
+        const details = {
+          ...clubData,
+          clubId: clubDoc.id
+        };
+        setClubData([details]);
+        // Use clubData to display the club information on the page
+      } else {
+        // Handle the case when the club document does not exist
+        Alert.alert('Club does not exist!');
+      }
     };
-
+    
     useEffect(() => {
-        getClubData();
-    }, []);
+      const unsubscribe = firestore()
+        .collection(CLUBS)
+        .doc(clubId)
+        .onSnapshot((doc) => {
+          if (doc.exists) {
+            const clubData = doc.data();
+            const details = {
+              ...clubData,
+              clubId: doc.id
+            };
+            setClubData([details]);
+            // Use clubData to update the club information on the page
+          } else {
+            // Handle the case when the club document no longer exists
+            Alert.alert('Club no longer exists!');
+          }
+        });
+    
+      return () => unsubscribe(); // Unsubscribe when the component unmounts
+    
+    }, [clubId]);
+
 
 
 
@@ -86,6 +106,13 @@ const ClubPage = ({ navigation }: any) => {
                                         buttonColor={theme.colors.buttonColor}
                                         textColor={theme.colors.primary}
                                         style={{ marginVertical: 5 }}
+                                        onPress={() => {
+                                            navigation.navigate("EditClubScreen", {
+                                                clubId,
+                                                clubName:clubData[0].name
+                                            })
+                                        }
+                                        }
 
 
                                     >
@@ -121,7 +148,8 @@ const ClubPage = ({ navigation }: any) => {
                             }}
                              onPress={()=>navigation.navigate("AllPlayerScreen", {
                                 clubId,
-                                title:clubData[0].name + " Players"
+                                title:clubData[0].name + " Players",
+                                clubName:clubData[0].name
                             })}
                             >
                                     <Text style={styles.playerlink}>View Players</Text>
