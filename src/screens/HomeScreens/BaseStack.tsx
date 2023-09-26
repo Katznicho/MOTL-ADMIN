@@ -12,6 +12,7 @@ import CalendarStack from './CalendarStack/CalendarStack';
 
 import { useNavigation } from '@react-navigation/native';
 import ClubStack from './ClubStack/ClubStack';
+import SeasonStack from './SeasonStack/SeasonStack';
 
 
 
@@ -121,7 +122,7 @@ const BaseStack = () => {
 
     />
 
-<Tab.Screen
+    <Tab.Screen
       name="Clubs"
       component={ClubStack}
       options={{
@@ -141,6 +142,29 @@ const BaseStack = () => {
       }}
 
     />
+
+    {/* teams */}
+    <Tab.Screen
+      name="Seasons"
+      component={SeasonStack}
+      options={{
+        tabBarLabel: 'Seasons',
+        tabBarAccessibilityLabel: 'Seasons',
+        tabBarIcon: ({ color, focused }: any) => !focused ? (
+          <View><Image source={require("../../assets/calendertwo.png")} /></View>
+
+
+        ) : (
+          <View>
+            <Image
+              source={require("../../assets/calendericonone.png")}
+            />
+          </View>
+        )
+      }}
+
+    />
+    {/* teams */}
 
 
 

@@ -123,3 +123,9 @@ export function formatTime(timeStr:string) {
   const formattedTime = timeObj.format('hh:mm A').replace(/^(\d{1}):/, '0$1:');
   return formattedTime;
 }
+
+export function formatDate(dateStr:string) {
+  const dateObj = moment(dateStr);
+  const formattedDate = dateObj.format('DD MMM YYYY');
+  return formattedDate;
+}

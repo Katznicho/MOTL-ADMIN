@@ -2,58 +2,60 @@ import { StyleSheet, Text, View, SafeAreaView, ScrollView, Alert, ImageBackgroun
 import React, { useEffect } from 'react'
 import { useRoute } from '@react-navigation/native'
 import { generalstyles } from '../../../generalstyles/generalstyles';
-import { CLUBS } from '../../../constants/endpoints';
+import { CLUBS, SEASONS } from '../../../constants/endpoints';
 import firestore, { firebase } from '@react-native-firebase/firestore';
 import { ActivityIndicator, Button, IconButton } from 'react-native-paper';
 import { theme } from '../../../theme/theme';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
-const ClubPage = ({ navigation }: any) => {
-    
-    const { clubId } = useRoute<any>().params
+const SeasonDetails = ({ navigation }: any) => {
+    const { seasonId } = useRoute<any>().params
 
 
-    const [clubData, setClubData] = React.useState<any>([]);
+    const [seasonData, setseasonData] = React.useState<any>([]);
 
-    const getClubData = async () => {
-      const clubDoc = await firestore().collection(CLUBS).doc(clubId).get();
-      if (clubDoc.exists) {
-        const clubData = clubDoc.data();
-        const details = {
-          ...clubData,
-          clubId: clubDoc.id
-        };
-        setClubData([details]);
-        // Use clubData to display the club information on the page
-      } else {
-        // Handle the case when the club document does not exist
-        Alert.alert('Club does not exist!');
-      }
-    };
-    
-    useEffect(() => {
-      const unsubscribe = firestore()
-        .collection(CLUBS)
-        .doc(clubId)
-        .onSnapshot((doc) => {
-          if (doc.exists) {
-            const clubData = doc.data();
+    const getSeasonData = async () => {
+        const seasonDoc = await firestore().collection(SEASONS).doc(seasonId).get();
+        if (seasonDoc.exists) {
+            const seasonData = seasonDoc.data();
             const details = {
-              ...clubData,
-              clubId: doc.id
+                ...seasonData,
+                seasonId: seasonDoc.id,
+                
             };
-            setClubData([details]);
-            // Use clubData to update the club information on the page
-          } else {
-            // Handle the case when the club document no longer exists
-            Alert.alert('Club no longer exists!');
-          }
-        });
-    
-      return () => unsubscribe(); // Unsubscribe when the component unmounts
-    
-    }, [clubId]);
+            setseasonData([details]);
+            // Use clubData to display the club information on the page
+        } else {
+            // Handle the case when the club document does not exist
+            Alert.alert('Club does not exist!');
+        }
+    };
+
+    useEffect(() => {
+        const unsubscribe = firestore()
+            .collection(SEASONS)
+            .doc(seasonId)
+            .onSnapshot((doc) => {
+                if (doc.exists) {
+                    const seasonData = doc.data();
+                    const details = {
+                        ...seasonData,
+                        seasonId: seasonId
+                    };
+
+
+                    setseasonData([details]);
+                    // Use clubData to update the club information on the page
+                } else {
+                    // Handle the case when the club document no longer exists
+                    Alert.alert('Club no longer exists!');
+                }
+            });
+
+        return () => unsubscribe(); // Unsubscribe when the component unmounts
+
+    }, [seasonId]);
 
 
 
@@ -68,12 +70,12 @@ const ClubPage = ({ navigation }: any) => {
                 }}
             >
                 {
-                    clubData.length > 0 ?
+                    seasonData.length > 0 ?
                         <View>
                             <ImageBackground
-                                source={{ uri: clubData[0].coverImage }}
+                                source={{ uri: seasonData[0].logo }}
                                 style={{ width: '100%', height: 200 }}
-                                
+
 
                             >
                                 <View>
@@ -90,7 +92,7 @@ const ClubPage = ({ navigation }: any) => {
                             <View style={[generalstyles.flexStyles, { justifyContent: "space-between", alignItems: "center" }]}>
                                 <View style={{ marginTop: -50, alignItems: 'flex-start', marginLeft: 20 }}>
                                     <ImageBackground
-                                        source={{ uri: clubData[0].logo }}
+                                        source={{ uri: seasonData[0].logo }}
                                         style={{ width: 100, height: 100 }}
                                         imageStyle={{ borderRadius: 50 }}
                                     >
@@ -109,16 +111,39 @@ const ClubPage = ({ navigation }: any) => {
                                         style={{ marginVertical: 5 }}
                                         onPress={() => {
                                             navigation.navigate("EditClubScreen", {
-                                                clubId,
-                                                clubName:clubData[0].name
+                                                seasonId,
+                                                seasonName: seasonData[0].name,
+                                                numOfTeams: seasonData[0].numOfTeams,
                                             })
                                         }
                                         }
 
 
                                     >
-                                        Edit Club
+                                        Edit Season
                                     </Button>
+
+                                    {/* view fixtures */}
+                                    <Button
+
+                                        mode="contained"
+                                        contentStyle={{ flexDirection: 'row-reverse' }}
+
+                                        buttonColor={theme.colors.buttonColor}
+                                        textColor={theme.colors.primary}
+                                        style={{ marginVertical: 5 }}
+                                        onPress={() => {
+                                            navigation.navigate("SeasonFixtureScreen", {
+                                                seasonId,
+                                                seasonName: seasonData[0].name
+                                            })
+                                        }}
+
+
+                                    >
+                                        View Fixtures
+                                    </Button>
+                                    {/* view fixtures */}
 
                                     <Button
 
@@ -127,16 +152,17 @@ const ClubPage = ({ navigation }: any) => {
 
                                         buttonColor={theme.colors.buttonColor}
                                         textColor={theme.colors.primary}
-                                        onPress={()=>{
-                                            navigation.navigate("CreatePlayerScreen", {
-                                                clubId,
-                                                clubName:clubData[0].name
+                                        onPress={() => {
+                                            navigation.navigate("AddFixtureScreen", {
+                                                seasonId,
+                                                seasonName: seasonData[0].name,
+                                                numOfTeams: seasonData[0].numOfTeams
                                             })
                                         }}
 
 
                                     >
-                                        Add Player
+                                        Add  Fixture
                                     </Button>
 
                                 </View>
@@ -145,15 +171,14 @@ const ClubPage = ({ navigation }: any) => {
                             </View>
                             {/* logo */}
                             <TouchableOpacity style={{
-                                marginHorizontal:20
+                                marginHorizontal: 20
                             }}
-                             onPress={()=>navigation.navigate("AllPlayerScreen", {
-                                clubId,
-                                title:clubData[0].name + " Players",
-                                clubName:clubData[0].name
-                            })}
+                                onPress={() => navigation.navigate("SeasonTableScreen", {
+                                    seasonId,
+                                    seasonName: seasonData[0].name
+                                })}
                             >
-                                    <Text style={styles.playerlink}>View Players</Text>
+                                <Text style={styles.playerlink}>View Table</Text>
                             </TouchableOpacity>
 
                             {/* club details */}
@@ -163,32 +188,27 @@ const ClubPage = ({ navigation }: any) => {
                             }}>
 
                                 <View style={styles.viewStyle}>
-                                    <Text style={styles.text}>Name : {clubData[0].name}</Text>
+                                    <Text style={styles.text}>Name : {seasonData[0].name}</Text>
                                 </View>
                                 <View style={styles.viewStyle}>
-                                    <Text style={styles.text}>Description : {clubData[0].description}</Text>
+                                    <Text style={styles.text}>Start Date: {seasonData[0].startDate}</Text>
                                 </View>
                                 <View style={styles.viewStyle}>
-                                    <Text style={styles.text}>Located : {clubData[0].location}</Text>
+                                    <Text style={styles.text}>End Date : {seasonData[0].endDate}</Text>
                                 </View>
                                 <View style={styles.viewStyle}>
-                                    <Text style={styles.text}>Created : {clubData[0].founded}</Text>
+                                    <Text style={styles.text}>Total Teams : {seasonData[0].numOfTeams}</Text>
                                 </View>
                                 <View style={styles.viewStyle}>
-                                    <Text style={styles.text}>Manager : {clubData[0].manager}</Text>
+                                    <Text style={styles.text}>Season Length: {seasonData[0].seasonLength}</Text>
                                 </View>
                                 <View style={styles.viewStyle}>
-                                    <Text style={styles.text}>Email : {clubData[0].email}</Text>
+                                    <Text style={styles.text}>Description : {seasonData[0].description}</Text>
                                 </View>
-                                <View style={styles.viewStyle}>
-                                    <Text style={styles.text}>Contact : {clubData[0].phoneNumber}</Text>
-                                </View>
-                                <View style={styles.viewStyle}>
-                                    <Text style={styles.text}>Stadium : {clubData[0].stadium}</Text>
-                                </View>
-                                <View style={styles.viewStyle}>
-                                    <Text style={styles.text}>Capacity: {clubData[0].capacity}</Text>
-                                </View>
+
+
+
+
 
                             </View>
 
@@ -203,7 +223,7 @@ const ClubPage = ({ navigation }: any) => {
                             justifyContent: 'center',
                             alignItems: 'center'
                         }}>
-                             <ActivityIndicator size="large" color={theme.colors.primary} />
+                            <ActivityIndicator size="large" color={theme.colors.primary} />
 
                         </View>
                 }
@@ -216,7 +236,7 @@ const ClubPage = ({ navigation }: any) => {
     )
 }
 
-export default ClubPage
+export default SeasonDetails
 
 const styles = StyleSheet.create({
 
@@ -243,8 +263,8 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
     },
-    playerlink:{
-        color:"#1c478e"
+    playerlink: {
+        color: "#1c478e"
     }
 
 })

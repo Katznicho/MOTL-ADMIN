@@ -14,6 +14,7 @@ import Players from './Players';
 import PlayerDetails from './PlayerDetails';
 import EditClub from './EditClub';
 import EditPlayer from './EditPlayer';
+import AddSeason from './AddSeason';
 
 const Stack = createStackNavigator();
 
@@ -361,7 +362,6 @@ const HomeStack = () => {
             />
           ),
         }}
-
       />
       {/* players */}
 
@@ -375,6 +375,42 @@ const HomeStack = () => {
 
       />
       {/* player details */}
+
+      {/* add season */}
+      <Stack.Screen
+        name="AddSeasonScreen"
+        component={AddSeason}
+        options={{
+          header: (props: any) => (
+            <TopBar
+              showSearch
+              {...props}
+              title={`Add New Season`}
+              previous={true}
+              titleStyle={{
+                color: `${theme.colors.textColor}`,
+                // fontSize: 18,
+                // width: 44,
+                // textShadowColor: "rgba(0, 0, 0, 0.5)",
+                // textShadowOffset: {
+                //   width: 0,
+                //   height: 4,
+                // },
+                textShadowRadius: 4,
+                textAlign: "left",
+                // fontFamily: "LeagueGothic-Regular",
+
+              }}
+              subtitleStyle={{
+                alignSelf: 'center',
+                color: `${theme.colors.textColor}`,
+                marginBottom: 5,
+              }}
+            />
+          ),
+        }}
+      />
+      {/* add season */}
     </Stack.Navigator>
   )
 }

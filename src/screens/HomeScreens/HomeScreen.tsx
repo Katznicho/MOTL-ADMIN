@@ -111,9 +111,6 @@ const HomeScreen = ({ navigation }: any) => {
 
   return (
     <SafeAreaView style={[generalstyles.container]}>
-
-
-
       {/* modal to select the number of teams to create */}
       <Modal
         animationType="slide"
@@ -240,6 +237,18 @@ const HomeScreen = ({ navigation }: any) => {
             onPress={() => setModalVisible(true)}
           >
             <Text style={styles.title}>Create Teams </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[
+            styles.cardContainer,
+            {
+             marginRight:40,
+             padding:40
+            }
+          ]}
+            onPress={() => navigation.navigate("AddSeasonScreen")}
+          >
+            <Text style={styles.title}>Add Season  </Text>
           </TouchableOpacity>
 
 

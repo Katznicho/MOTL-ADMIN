@@ -2,32 +2,34 @@ import { StyleSheet, Text, View, SafeAreaView,  FlatList, Pressable, Image } fro
 import React, { useEffect, useState } from 'react'
 import { generalstyles } from '../../../generalstyles/generalstyles'
 import firestore, { firebase } from '@react-native-firebase/firestore';
-import { CLUBS } from '../../../constants/endpoints';
+import { CLUBS, SEASONS } from '../../../constants/endpoints';
 import { theme } from '../../../theme/theme';
 import { ActivityIndicator } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SearchComponent from '../../../components/SearchComponent';
 
-const Clubs = ({ navigation }: any) => {
-    const [clubs, setClubs] = React.useState<any[]>([]);
+const Seasons = ({ navigation }: any) => {
+    const [seasons, setSeasons] = React.useState<any[]>([]);
 const [loading, setLoading] = React.useState(false);
 
-const getClubs = async () => {
+const getSeasons = async () => {
   try {
     setLoading(true);
-    setClubs([]);
-    const unsubscribe = firestore().collection(CLUBS).onSnapshot((snapshot) => {
-      const updatedClubs: any[] = [];
-      snapshot.forEach((club) => {
-        const clubData = club.data();
-        clubData.id = club.id;
+    setSeasons([]);
+    const unsubscribe = firestore().collection(SEASONS).onSnapshot((snapshot) => {
+      const updatedSeasons: any[] = [];
+      snapshot.forEach((season) => {
+        const seasonData = season.data();
+        seasonData.id = season.id;
+    
         const details = {
-          ...clubData,
-          clubId: club.id,
+            ...seasonData,
+          seasonId: season.id,
         };
-        updatedClubs.push(details);
+        updatedSeasons.push(details);
       });
-      setClubs(updatedClubs);
+
+        setSeasons(updatedSeasons);
       setLoading(false);
     });
     
@@ -40,11 +42,7 @@ const getClubs = async () => {
 };
 
 useEffect(() => {
-  const unsubscribe = getClubs();
-  // Return a cleanup function to unsubscribe from the snapshot listener when the component unmounts
-  return () => {
-
-  };
+  getSeasons();
 }, []);
 
 const [searchQuery, setSearchQuery] = useState('');
@@ -61,14 +59,14 @@ const [searchQuery, setSearchQuery] = useState('');
                     <ActivityIndicator size="large" color={theme.colors.primary} />
 
                 </View>
-            ) : clubs?.length == 0 ? (
+            ) : Seasons?.length == 0 ? (
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{color:theme.colors.primary , fontSize:20 , fontWeight:"bold"}}>No clubs yet</Text>
+                    <Text style={{color:theme.colors.primary , fontSize:20 , fontWeight:"bold"}}>No seasons yet</Text>
                 </View>
             ) 
             : (
                 <FlatList
-                    data={clubs}
+                    data={seasons}
                     showsVerticalScrollIndicator={false}
                     keyExtractor={item => String(item.id)}
                     contentContainerStyle={{
@@ -80,7 +78,7 @@ const [searchQuery, setSearchQuery] = useState('');
                     ListHeaderComponent={
                         <View style={[generalstyles.centerContent]}>
                         <SearchComponent
-                          placeholder="search for  a club"
+                          placeholder="search for a season"
                           value={searchQuery}
                           searchStyles={{
                             elevation: 4,
@@ -95,13 +93,13 @@ const [searchQuery, setSearchQuery] = useState('');
                           }}
                           onSearchChange={(query: any) => {
                             if (query.length > 0) {
-                              const filteredClubs = clubs.filter((item: any) =>
+                              const filteredClubs = seasons.filter((item: any) =>
                                 item.name.toLowerCase().includes(query.toLowerCase()),
                               );
-                               setClubs(filteredClubs);
+                               setSeasons(filteredClubs);
 
                             } else {
-                                getClubs();
+                                getSeasons();
                             }
                             setSearchQuery(query);
                         
@@ -115,8 +113,8 @@ const [searchQuery, setSearchQuery] = useState('');
                             style={styles.container}
                             key={index}
                             onPress={
-                                () => navigation.navigate('ClubDetailScreen', {
-                                    clubId: item.clubId
+                                () => navigation.navigate('SeasonDetailsScreen', {
+                                    seasonId: item.seasonId,
                                 }
                                 )
                             }
@@ -146,8 +144,8 @@ const [searchQuery, setSearchQuery] = useState('');
                             }}>
                                 {/* team name */}
                                 <Text style={styles.date}>{item.name}</Text>
-                                <Text style={styles.status}>{item.stadium}</Text>
-                                <Text style={styles.mode}>{item.location}</Text>
+                                <Text style={styles.status}>{item.startDate}</Text>
+                                <Text style={styles.mode}>{item.endDate}</Text>
 
                                 {/* team name */}
 
@@ -158,7 +156,7 @@ const [searchQuery, setSearchQuery] = useState('');
                                 {/* amount details */}
                                 <View>
                                     <Text style={styles.amount}>{
-                                        item.manager
+                                        item.numOfTeams
 
                                     }</Text>
 
@@ -186,7 +184,7 @@ const [searchQuery, setSearchQuery] = useState('');
     )
 }
 
-export default Clubs
+export default Seasons
 
 const styles = StyleSheet.create({
     container: {

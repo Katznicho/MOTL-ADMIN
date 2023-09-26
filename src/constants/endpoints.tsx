@@ -39,6 +39,9 @@ export const CLUBS:string = "clubs";
 export const CLUB_MEMBERS:string = "club-members";
 export const CLUB_PLAYERS:string = "club_players";
 export const PLAYERS: string = "players";
+export const SEASONS: string = "seasons";
+export const SEASON_TABLE: string = "season_table";
+export const SEASON_FIXTURES: string = "season_fixtures";
 
 //firebase storage
 export const PROFILE_STORAGE:string  = "profile/images"
